@@ -14,6 +14,8 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
+        navigationController?.navigationBar.prefersLargeTitles = true
+        title = "NamesToFaces"
     }
 
 
