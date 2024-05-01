@@ -8,6 +8,8 @@
 import UIKit
 
 class ViewController: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var people = [Person]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +44,10 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         if let jpegData = image.jpegData(compressionQuality: 0.8) { // UIImage has a jpegData() to convert it to a Data object in JPEG image format
             try? jpegData.write(to: imagePath) // There's a method on Data called write(to:) that, well, writes its data to disk.
         }
+        
+        let person = Person(name: "Unknown", image: imageName)
+        people.append(person)
+        collectionView.reloadData()
         
         dismiss(animated: true)
     }
