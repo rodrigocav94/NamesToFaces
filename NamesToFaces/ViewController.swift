@@ -44,6 +44,9 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     @objc func addNewPerson() {
         let picker = UIImagePickerController()
         picker.allowsEditing = true // This dictionary parameter will contain always contain .editedImage because allowsEditing is true. Otherwise, it would contain the key .originalImage
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            picker.sourceType = .camera
+        }
         picker.delegate = self // Useful for telling us when the user either selected a picture or cancelled the picker.
         present(picker, animated: true)
     }
