@@ -73,20 +73,55 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let person = people[indexPath.item]
+        let ac = UIAlertController(title: "Selection an Action", message: nil, preferredStyle: .actionSheet)
         
-        let ac = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
-        ac.addTextField()
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) {[weak self, weak person] _ in
+            guard let self, let person else { return }
+            self.deletePerson(person)
+        }
+        ac.addAction(deleteAction)
+        
+        let renameAction = UIAlertAction(title: "Rename", style: .default) {[weak self, weak person] _ in
+            guard let self, let person else { return }
+            self.renamePerson(person)
+        }
+        ac.addAction(renameAction)
         
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
-        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self, weak ac] _ in
-            guard let newName = ac?.textFields?[0].text else { return }
+        present(ac, animated: true)
+    }
+    
+    func renamePerson(_ person: Person) {
+        let renameAc = UIAlertController(title: "Rename person", message: nil, preferredStyle: .alert)
+        renameAc.addTextField()
+        
+        renameAc.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        renameAc.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak self, weak renameAc] _ in
+            guard let newName = renameAc?.textFields?[0].text else { return }
             person.name = newName
             
             self?.collectionView.reloadData()
         }))
         
-        present(ac, animated: true)
+        present(renameAc, animated: true)
+    }
+    
+    func deletePerson(_ person: Person) {
+        let deleteAc = UIAlertController(title: "Confirm deletion", message: nil, preferredStyle: .alert)
+        
+        deleteAc.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        deleteAc.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            guard let self else { return }
+            people.removeAll {
+                $0.name == person.name && $0.image == person.image
+            }
+            collectionView.reloadData()
+        })
+        
+        present(deleteAc, animated: true)
     }
 }
 
