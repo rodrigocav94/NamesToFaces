@@ -28,6 +28,16 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 print("Failed to load people: \(error)")
             }
         }
+        
+        if let savedPeople = defaults.object(forKey: "people") as? Data {
+            let jsonDecoder = JSONDecoder()
+            
+            do {
+                people = try jsonDecoder.decode([Person].self, from: savedPeople)
+            } catch {
+                print("Failed to load people")
+            }
+        }
     }
 
 
@@ -146,9 +156,12 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     func save() {
-        if let savedData = try? NSKeyedArchiver.archivedData(withRootObject: people, requiringSecureCoding: false) { // Converts array of Person into Data
+        let jsonEncoder = JSONEncoder()
+        if let savedData = try? jsonEncoder.encode(people) {
             let defaults = UserDefaults.standard
-            defaults.set(savedData, forKey: "people") // Stores in UserDefaults
+            defaults.setValue(savedData, forKey: "people")
+        } else {
+            print("Failed to save people.")
         }
     }
 }
